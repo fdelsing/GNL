@@ -1,86 +1,72 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   gnl3.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fdelsing <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/08 21:00:37 by fdelsing          #+#    #+#             */
-/*   Updated: 2017/12/14 19:47:53 by fdelsing         ###   ########.fr       */
+/*   Created: 2017/12/15 21:27:20 by fdelsing          #+#    #+#             */
+/*   Updated: 2017/12/15 23:56:07 by fdelsing         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-char	*malloc_sample(char *sample, char *buf, int size)
+size_t		ft_len(char *sample)
 {
-	char *newsample;
+	size_t	i;
 
-	if (!(newsample = (char*)malloc(sizeof(char) *
-					ft_strlen(sample) + size + 1)))
-		return (0);
-	if (sample)
-		newsample = ft_strcpy(newsample, sample);
-	free(sample);
-	newsample = ft_strncat(newsample, buf, size);
-	return (newsample);
-}
-
-char	*ft_fill_line(char *sample, int y)
-{
-	char	*s;
-	size_t	len;
-
-	len = 0;
-	while (y-- > 0)
-	{
-		if (ft_strchr(sample, '\n') == NULL)
-			return (NULL);
-		sample = ft_strchr(sample, '\n') + 1;
-	}
-	if (ft_strchr(sample, '\n') == NULL)
-	{
-		while (sample[len])
-			len++;
-		if (len == 0)
-			return (NULL);
-	}
-	if (ft_strchr(sample, '\n') != NULL)
-		while (sample[len] && sample[len] != '\n')
-			len++;
-	if (!(s = (char*)malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	s = ft_strncpy(s, sample, len);
-	s[len] = '\0';
-	return (s);
+	i = 0;
+	while (sample[i] != '\n' && sample[i])
+		i++;
+	return (i);
 }
 
 int		get_next_line(const int fd, char **line)
 {
 	int			ret;
-	static int	y = 0;
+	size_t		len;
 	char		*buf;
-	static char *sample;
+	static char *sample = "";
+
 
 	if (fd < 0)
 		return (-1);
-	if (y == 0)
+	buf = ft_strnew(BUFF_SIZE); 
+	while(ft_strchr(sample, '\n') == NULL)
 	{
-		sample = ft_strnew(0);
-		buf = ft_strnew(BUFF_SIZE);
-		while ((ret = read(fd, buf, BUFF_SIZE)))
+		ret = read(fd, buf, BUFF_SIZE);
+		buf[ret] = '\0';
+		if (ret == -1)
 		{
-			buf[ret] = '\0';
-			sample = malloc_sample(sample, buf, ret);
+			free(buf);
+			return (-1);
 		}
-		free(buf);
+		sample = ft_strjoin(sample, buf);
+		if (ret < BUFF_SIZE)
+		{
+			len = ft_len(sample);
+			*line = ft_strsub(sample, 0, len);
+//			ft_putstr("sample = ");
+//			ft_putendl(sample);
+			free(buf);
+			free(sample);
+			if (ret == 0 && ft_strlen(sample) == 0)
+				return (0);
+			sample = ft_strsub(sample, len + 1, ft_strlen(sample) - len);
+			return (1);
+		}
 	}
-	if ((ft_fill_line(sample, y)) == NULL)
-		return (0);
-	buf = ft_fill_line(sample, y);
-	*line = buf;
+//	ft_putstr("sample = ");
+//	ft_putendl(sample);
+	len = ft_len(sample);
+	*line = ft_strsub(sample, 0, len);
+	free(sample);
+	sample = ft_strsub(sample, len + 1, ft_strlen(sample) - len);
 	free(buf);
-	y++;
+//	ft_putstr("sample = ");
+//	ft_putendl(sample);
 	return (1);
 }
 
@@ -93,21 +79,42 @@ int		main2(int argc, char **argv)
 	fd = open(argv[1], O_RDONLY);
 	i = 0;
 
-	while (get_next_line((const int)fd, &line) != 0)
-	{
-		ft_putnbr(get_next_line((const int)fd, &line));
-		ft_putchar('\n');
-
-		ft_putstr("line = ");
-		ft_putendl(line);
-	}
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	ft_putnbr(get_next_line((const int)fd, &line));
+	ft_putchar('\n');
+	ft_putendl(line);
+	//	while (get_next_line((const int)fd, &line) != 0)
+	//	{
+	//		ft_putnbr(get_next_line((const int)fd, &line));
+	//		ft_putchar('\n');
+	//
+	//		ft_putstr("line = ");
+	//		ft_putendl(line);
+	//	}
 	return (0);
 }
 
 int		main(int argc, char **argv)
 {
 	main2(argc, argv);
-//	while (1)
-//	{}
+		while (1)
+		{}
 	return (0);
 }
