@@ -6,7 +6,7 @@
 /*   By: fdelsing <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 18:24:29 by fdelsing          #+#    #+#             */
-/*   Updated: 2018/01/03 18:24:48 by fdelsing         ###   ########.fr       */
+/*   Updated: 2018/01/11 14:02:07 by fdelsing         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,7 @@ int			ft_ret(char **temp, char **sample, char **line, int ret)
 	len = ft_len(*sample);
 	*line = ft_strsub(*sample, 0, len);
 	if (ret == 0 && ft_strlen(*sample) == 0)
-	{
-		free(*sample);
 		return (0);
-	}
 	*temp = ft_strsub(*sample, len + 1, ft_strlen(*sample) - len);
 	free(*sample);
 	*sample = ft_strsub(*temp, 0, ft_strlen(*temp));
