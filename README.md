@@ -1,6 +1,6 @@
 # GNL
 Whether it's a file, standard input, or even later a network connection, you'll need to read content line by line.
-This project is a function written in C language that will allow you to do exactly that. 
+This project is a function written in C language that will allow you to do exactly that using the Libft (self-made basic function library). 
 
 ---
 
